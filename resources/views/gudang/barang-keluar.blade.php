@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-
 <body>
     @include('component-web.sidebar')
     @include('component-web.head')
@@ -27,13 +25,13 @@
                         <form method="GET" action="{{ route('aproval.barang') }}">
                             <div class="form-group">
                                 <label for="status">Status Permintaan Barang:</label>
-                                <select id="status" name="status" required>
+                                <select id="status" name="status" class="form-select d-inline-block w-auto" required>
                                     <option value="">-- Pilih Status --</option>
                                     <option value="belum_diterima" {{ request('status') == 'belum_diterima' ? 'selected' : '' }}>Belum</option>
                                     <option value="sudah_diterima" {{ request('status') == 'sudah_diterima' ? 'selected' : '' }}>Sudah Diterima</option>
                                 </select>
+                                <button type="submit" class="btn btn-primary ms-2">Filter</button>
                             </div>
-                            <button type="submit" class="btn btn-primary">Filter</button>
                         </form>
                     </div>
                     <div class="card-body">
@@ -54,7 +52,7 @@
                             <tbody>
                                 @foreach ($Barang as $db)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td> <!-- Menampilkan nomor urut -->
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $db->tanggal }}</td>
                                     <td>{{ $db->unitStok->namabarang }}</td>
                                     <td>{{ $db->masuk }}</td>
@@ -63,63 +61,20 @@
                                     <td>{{ $db->user_unit }}</td>
                                     <td>{{ $db->status }}</td>
                                     <td>
-                                        <!-- Button Untuk Tambah Barang -->
-                                        <div class="form-group">
-                                            <button type="button" class="btn btn-outline-success"
+                                        <div class="form-group mb-0">
+                                            @if($db->status == 'pending')
+                                            <button type="button" class="btn btn-sm btn-outline-success"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#tambahbarang{{ $db->id_transaksi_unit }}">
-                                                Masuk
+                                                Setujui
                                             </button>
+                                            @endif
                                             <a href="{{ route('transaksi.logistik', ['id' => $db->id_transaksi_unit]) }}"
                                                 target="_blank"
-                                                class="btn btn-outline-primary">
+                                                class="btn btn-sm btn-outline-primary">
                                                 Cetak
                                             </a>
-
                                         </div>
-
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="tambahbarang{{ $db->id_transaksi_unit }}"
-                                            tabindex="-1" role="dialog"
-                                            aria-labelledby="tambahBarangLabel{{ $db->id_transaksi_unit }}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="tambahBarangLabel{{ $db->id_transaksi_unit }}">
-                                                            Tambah Barang: {{ $db->unitStok->namabarang }}
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <form action="{{ route('barang.acc', $db->id_transaksi_unit) }}" method="POST">
-                                                        @csrf
-
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label for="stok-gudang">Jumlah Stok</label>
-                                                                <input type="text" class="form-control" value="{{ $db->unitStok->stok_gudang }}" readonly>
-                                                            </div>
-
-                                                            <div class="mb-3">
-                                                                <label for="total-keluar">Jumlah Permintaan</label>
-                                                                <input type="text" class="form-control" value="{{ $db->masuk }}" readonly>
-                                                            </div>
-
-                                                            <div class="mb-3">
-                                                                <label for="jumlah-disetujui" class="form-label">Jumlah Disetujui</label>
-                                                                <input type="number" name="jumlah_disetujui" class="form-control" min="1" max="{{ $db->masuk }}" required>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Setujui</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </td>
                                 </tr>
                                 @endforeach
@@ -128,6 +83,50 @@
                     </div>
                 </div>
 
+                {{-- Modals diletakkan di luar tabel --}}
+                @foreach ($Barang as $db)
+                <div class="modal fade" id="tambahbarang{{ $db->id_transaksi_unit }}"
+                    tabindex="-1" role="dialog"
+                    aria-labelledby="tambahBarangLabel{{ $db->id_transaksi_unit }}"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="tambahBarangLabel{{ $db->id_transaksi_unit }}">
+                                    Persetujuan Pengeluaran: {{ $db->unitStok->namabarang }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('barang.acc', $db->id_transaksi_unit) }}" method="POST">
+                                @csrf
+
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="stok-gudang">Jumlah Stok Gudang</label>
+                                        <input type="text" class="form-control" value="{{ $db->unitStok->stok_gudang }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="total-keluar">Jumlah Permintaan</label>
+                                        <input type="text" class="form-control" value="{{ $db->masuk }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="jumlah-disetujui" class="form-label">Jumlah Disetujui</label>
+                                        <input type="number" name="jumlah_disetujui" class="form-control" min="1" max="{{ $db->masuk }}" value="{{ $db->masuk }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Setujui Pengeluaran</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+
             </section>
         </div>
 
@@ -135,12 +134,10 @@
             document.addEventListener("DOMContentLoaded", function() {
                 let today = new Date();
                 let year = today.getFullYear();
-                let month = String(today.getMonth() + 1).padStart(2, '0'); // Bulan harus 2 digit
-                let day = String(today.getDate()).padStart(2, '0'); // Hari harus 2 digit
-
+                let month = String(today.getMonth() + 1).padStart(2, '0');
+                let day = String(today.getDate()).padStart(2, '0');
                 let formattedDate = `${year}-${month}-${day}`;
 
-                // Setel semua input hidden dengan class "tanggal-input"
                 document.querySelectorAll(".tanggal-input").forEach(input => {
                     input.value = formattedDate;
                 });

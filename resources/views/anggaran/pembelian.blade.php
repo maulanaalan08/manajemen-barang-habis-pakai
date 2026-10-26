@@ -130,7 +130,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($anggaranList as $item)
+                                        @foreach($anggaranList as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
@@ -145,27 +145,21 @@
                                             <td class="small text-muted">{{ $item->suplier_terakhir }}</td>
                                             <td class="small">{{ $item->catatan ?: '-' }}</td>
                                         </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="10" class="text-center text-muted py-5">
-                                                <i class="bi bi-calendar-x fs-1 d-block mb-2 text-warning"></i>
-                                                Belum ada data perencanaan anggaran pada periode <strong>{{ $namaBulan[$month] ?? $month }} {{ $year }}</strong>.
-                                            </td>
-                                        </tr>
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
-                                    @if($anggaranList->count() > 0)
-                                    <tfoot class="table-light">
-                                        <tr class="fw-bold fs-6">
-                                            <td colspan="6" class="text-uppercase text-end">Total Seluruh Anggaran:</td>
-                                            <td class="text-center text-dark">{{ number_format($totalKuantitas) }}</td>
-                                            <td class="text-end text-primary font-monospace">Rp {{ number_format($totalAnggaran, 0, ',', '.') }}</td>
-                                            <td colspan="2"></td>
-                                        </tr>
-                                    </tfoot>
-                                    @endif
                                 </table>
                             </div>
+
+                            @if($anggaranList->count() > 0)
+                            <div class="p-3 mt-3 bg-light rounded-3 d-flex flex-column flex-md-row justify-content-between align-items-center border">
+                                <div class="fw-bold text-dark">
+                                    <i class="bi bi-cash-stack text-success me-1"></i> Total Estimasi Anggaran ({{ $namaBulan[$month] ?? $month }} {{ $year }}):
+                                </div>
+                                <div class="fs-5 fw-bold text-primary font-monospace">
+                                    Rp {{ number_format($totalAnggaran, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </section>
@@ -176,11 +170,6 @@
     </div>
 
     @include('component-web.script')
-    <script>
-        $(document).ready(function() {
-            $('#table1').DataTable();
-        });
-    </script>
 </body>
 
 </html>

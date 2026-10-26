@@ -147,3 +147,4 @@ class PrediksiController extends Controller
         ));
     }
 }
+

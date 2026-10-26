@@ -87,7 +87,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($barang as $db)
+                                        @foreach ($barang as $db)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td><span class="badge bg-secondary font-monospace">{{ $db->kodebarang }}</span></td>
@@ -113,80 +113,79 @@
                                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalAnggaran{{ $db->idbarang }}">
                                                     <i class="bi bi-plus-circle me-1"></i> Rencana
                                                 </button>
-
-                                                {{-- Modal Input Anggaran --}}
-                                                <div class="modal fade" id="modalAnggaran{{ $db->idbarang }}" tabindex="-1" aria-labelledby="modalLabel{{ $db->idbarang }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content text-start">
-                                                            <div class="modal-header bg-primary text-white">
-                                                                <h5 class="modal-title text-white" id="modalLabel{{ $db->idbarang }}">
-                                                                    <i class="bi bi-wallet-fill me-2"></i>Rencana Anggaran: {{ $db->namabarang }}
-                                                                </h5>
-                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-
-                                                            <form action="{{ route('anggaran.masuk') }}" method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="barang_id" value="{{ $db->idbarang }}">
-
-                                                                <div class="modal-body">
-                                                                    <div class="bg-light p-3 rounded mb-3 small">
-                                                                        <div class="row">
-                                                                            <div class="col-6">Kode: <strong>{{ $db->kodebarang }}</strong></div>
-                                                                            <div class="col-6">Satuan: <strong>{{ $db->idsatuan }}</strong></div>
-                                                                            <div class="col-6 mt-1">Sisa Stok: <strong>{{ $db->stok_gudang }}</strong></div>
-                                                                            <div class="col-6 mt-1">Keluar Bln Ini: <strong>{{ $db->pemakaian_bulan_ini }}</strong></div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">Tanggal Perencanaan</label>
-                                                                        <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">Harga Satuan (Rp)</label>
-                                                                        <div class="input-group">
-                                                                            <span class="input-group-text">Rp</span>
-                                                                            <input type="number" name="harga" class="form-control" value="{{ $db->harga_terakhir }}" min="0" required>
-                                                                        </div>
-                                                                        <small class="text-muted">Acuan dari PO terakhir: Rp {{ number_format($db->harga_terakhir, 0, ',', '.') }}</small>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">Jumlah Kuantitas Pembelian</label>
-                                                                        <input type="number" name="jumlah" class="form-control" min="1" placeholder="Masukkan jumlah unit barang..." required>
-                                                                    </div>
-
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label fw-semibold">Catatan / Keterangan</label>
-                                                                        <input type="text" name="catatan" class="form-control" placeholder="Contoh: Kebutuhan operasional triwulan, stok menipis...">
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                                                    <button type="submit" class="btn btn-primary">
-                                                                        <i class="bi bi-save me-1"></i> Simpan Rencana Anggaran
-                                                                    </button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </td>
                                         </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center text-muted py-4">Data barang tidak ditemukan.</td>
-                                        </tr>
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </section>
+
+                {{-- Modals diletakkan di luar tabel agar DOM DataTables bersih --}}
+                @foreach ($barang as $db)
+                <div class="modal fade" id="modalAnggaran{{ $db->idbarang }}" tabindex="-1" aria-labelledby="modalLabel{{ $db->idbarang }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-start">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title text-white" id="modalLabel{{ $db->idbarang }}">
+                                    <i class="bi bi-wallet-fill me-2"></i>Rencana Anggaran: {{ $db->namabarang }}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <form action="{{ route('anggaran.masuk') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="barang_id" value="{{ $db->idbarang }}">
+
+                                <div class="modal-body">
+                                    <div class="bg-light p-3 rounded mb-3 small">
+                                        <div class="row">
+                                            <div class="col-6">Kode: <strong>{{ $db->kodebarang }}</strong></div>
+                                            <div class="col-6">Satuan: <strong>{{ $db->idsatuan }}</strong></div>
+                                            <div class="col-6 mt-1">Sisa Stok: <strong>{{ $db->stok_gudang }}</strong></div>
+                                            <div class="col-6 mt-1">Keluar Bln Ini: <strong>{{ $db->pemakaian_bulan_ini }}</strong></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Tanggal Perencanaan</label>
+                                        <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Harga Satuan (Rp)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" name="harga" class="form-control" value="{{ $db->harga_terakhir }}" min="0" required>
+                                        </div>
+                                        <small class="text-muted">Acuan dari PO terakhir: Rp {{ number_format($db->harga_terakhir, 0, ',', '.') }}</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Jumlah Kuantitas Pembelian</label>
+                                        <input type="number" name="jumlah" class="form-control" min="1" placeholder="Masukkan jumlah unit barang..." required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Catatan / Keterangan</label>
+                                        <input type="text" name="catatan" class="form-control" placeholder="Contoh: Kebutuhan operasional triwulan, stok menipis...">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-save me-1"></i> Simpan Rencana Anggaran
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+
             </div>
 
             @include('component-web.footer')
@@ -194,11 +193,6 @@
     </div>
 
     @include('component-web.script')
-    <script>
-        $(document).ready(function() {
-            $('#table1').DataTable();
-        });
-    </script>
 </body>
 
 </html>
