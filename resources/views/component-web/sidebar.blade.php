@@ -31,6 +31,38 @@
                     </a>
                 </li>
 
+                {{-- Prediksi Kebutuhan WMA (Admin, Pengadaan, Logistik) --}}
+                @auth
+                @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('pengadaan') || auth()->user()->hasRole('logistik'))
+                <li class="sidebar-item {{ request()->is('prediksi*') ? 'active' : '' }}">
+                    <a href="{{ route('prediksi.index') }}" class='sidebar-link'>
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>Prediksi Kebutuhan (WMA)</span>
+                    </a>
+                </li>
+                @endif
+                @endauth
+
+                {{-- Anggaran Belanja (Admin, Pengadaan, Logistik) --}}
+                @auth
+                @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('pengadaan') || auth()->user()->hasRole('logistik'))
+                <li class="sidebar-item has-sub {{ request()->is('anggaran*') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-wallet2"></i>
+                        <span>Anggaran</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item {{ request()->is('anggaran') ? 'active' : '' }}">
+                            <a href="{{ route('anggaran') }}">Perencanaan Anggaran</a>
+                        </li>
+                        <li class="submenu-item {{ request()->is('anggaran/pembelian*') ? 'active' : '' }}">
+                            <a href="{{ route('anggaran.pembelian') }}">Rekap Pembelian</a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+                @endauth
+
                 {{-- Purchase Order (Admin & Pengadaan) --}}
                 @auth
                 @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('pengadaan'))

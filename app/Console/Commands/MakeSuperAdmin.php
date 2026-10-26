@@ -77,3 +77,4 @@ class MakeSuperAdmin extends Command
         return 0;
     }
 }
+

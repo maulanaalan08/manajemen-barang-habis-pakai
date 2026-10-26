@@ -43,6 +43,11 @@ class Barang extends Model
         return $this->hasMany(Anggaran::class, 'barang_id', 'idbarang');
     }
 
+    public function anggaran()
+    {
+        return $this->hasMany(Anggaran::class, 'barang_id', 'idbarang');
+    }
+
     public function gudang()
     {
         return $this->belongsTo(Preorder::class, 'barang_id', 'idbarang');

@@ -10,6 +10,8 @@ use App\Http\Controllers\AnfraController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\OpnameController;
 use App\Http\Controllers\PreorderController;
+use App\Http\Controllers\PrediksiController;
+use App\Http\Controllers\AnggaranController;
 use App\Models\Preorder;
 
 /*
@@ -85,4 +87,17 @@ Route::get('/laporanBarangMasuk/cetak', [CetakController::class, 'barangMasuk'])
 //opname barang
 Route::get('/opname', [OpnameController::class, 'index3'])->middleware(['auth', 'verified', 'role:admin|logistik'])->name('opname.barang');
 Route::post('/opname/masuk', [OpnameController::class, 'tambah'])->middleware(['auth', 'verified', 'role:admin|logistik'])->name('opname.masuk');
+
+// PREDIKSI KEBUTUHAN BARANG (WMA)
+Route::middleware(['auth', 'verified', 'role:admin|logistik|pengadaan'])->group(function () {
+    Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
+    Route::get('/prediksi/pergerakan', [PrediksiController::class, 'index'])->name('prediksi.pergerakan');
+    Route::get('/prediksi/{id_barang}', [PrediksiController::class, 'prediksi'])->name('prediksi.detail');
+
+    // PERENCANAAN ANGGARAN & ANGGARAN PEMBELIAN
+    Route::get('/anggaran', [AnggaranController::class, 'index'])->name('anggaran');
+    Route::post('/anggaran/masuk', [AnggaranController::class, 'store'])->name('anggaran.masuk');
+    Route::get('/anggaran/pembelian', [AnggaranController::class, 'pembelian'])->name('anggaran.pembelian');
+    Route::get('/anggaran/pembelian/cetak', [AnggaranController::class, 'cetak'])->name('anggaran.cetak');
+});
 
