@@ -1,0 +1,39 @@
+# Git & GitHub
+.git
+.github
+.gitignore
+.gitattributes
+
+# Dependencies
+/vendor
+/node_modules
+
+# Environment & IDE
+.env
+.env.*
+!.env.example
+!.env.docker.example
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Build & Logs
+npm-debug.log
+yarn-error.log
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/*.key
+
+# Tests
+tests
+phpunit.xml
+.phpunit.result.cache
+
+# Misc
+README.md
+Homestead.json
+Homestead.yaml
+auth.json

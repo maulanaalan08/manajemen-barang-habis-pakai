@@ -132,6 +132,46 @@ Setelah seeder dijalankan, akun bawaan yang siap digunakan:
 
 ---
 
+## 🐳 Deployment Menggunakan Docker & Docker Compose
+
+Proyek ini telah dikonfigurasi penuh dengan **Multi-Stage Dockerfile** dan **Docker Compose** yang siap digunakan untuk server lokal (InstaBox) maupun pipeline CI/CD:
+
+### 1. Persiapan Environment Docker
+Salin file konfigurasi docker:
+```bash
+cp .env.docker.example .env
+```
+Sesuaikan nilai `APP_URL` dengan alamat IP lokal server InstaBox Anda (contoh: `http://192.168.1.50`).
+
+### 2. Jalankan Kontainer (App, Nginx, & Database)
+Cukup jalankan satu perintah:
+```bash
+docker compose up -d --build
+```
+Sistem secara otomatis akan:
+1. Melakukan build aset frontend (Vite & Tailwind) via Node.js container.
+2. Membangun container PHP 8.2-FPM dengan ekstensi lengkap (GD, FreeType, Zip, Opcache, PDO MySQL).
+3. Menjalankan database MariaDB/MySQL.
+4. Menjalankan Nginx web server pada port 80.
+5. Menjalankan migrasi database dan memastikan akun Super Admin siap pakai melalui `docker/entrypoint.sh`.
+
+### 3. Monitoring & Perintah Tambahan Docker
+```bash
+# Melihat status kontainer yang berjalan
+docker compose ps
+
+# Melihat log aplikasi secara realtime
+docker compose logs -f app
+
+# Masuk ke terminal kontainer Laravel
+docker compose exec app sh
+
+# Menghentikan layanan kontainer
+docker compose down
+```
+
+---
+
 ## ⚡ Perintah Cepat Super Admin
 
 Aplikasi ini dilengkapi dengan Artisan Command khusus untuk memudahkan pengelolaan hak akses:
