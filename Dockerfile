@@ -66,6 +66,9 @@ COPY . /var/www/html
 # Copy compiled frontend assets from Stage 1
 COPY --from=frontend /app/public/build /var/www/html/public/build
 
+# Salin template aset public ke /var/www/public_template untuk volume bersama Nginx
+RUN cp -r /var/www/html/public /var/www/public_template
+
 # Install PHP dependencies via Composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 

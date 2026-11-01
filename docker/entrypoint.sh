@@ -17,6 +17,12 @@ if [ ! -f /var/www/html/.env ]; then
     fi
 fi
 
+# 1b. Sinkronkan aset public ke direktori /var/www/html/public (volume bersama Nginx)
+if [ -d /var/www/public_template ]; then
+    echo "==> [Docker Entrypoint] Memperbarui aset public ke volume bersama..."
+    cp -ru /var/www/public_template/. /var/www/html/public/ 2>/dev/null || true
+fi
+
 # 2. Pastikan direktori storage & cache tersedia
 mkdir -p /var/www/html/storage/framework/cache/data \
          /var/www/html/storage/framework/sessions \
@@ -68,6 +74,7 @@ fi
 if [ "$RUN_MIGRATIONS" = "true" ]; then
     echo "==> [Docker Entrypoint] Menjalankan migrasi database..."
     php artisan migrate --force || true
+    php artisan db:seed --force || true
 
     # Pastikan Super Admin siap digunakan
     php artisan user:superadmin || true
