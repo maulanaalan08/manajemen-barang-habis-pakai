@@ -85,3 +85,4 @@ echo "==> [Docker Entrypoint] Aplikasi siap dijalankan!"
 
 # Jalankan perintah utama kontainer (php-fpm)
 exec "$@"
+

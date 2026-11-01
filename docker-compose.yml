@@ -86,3 +86,4 @@ volumes:
 networks:
   projekkp_net:
     driver: bridge
+
