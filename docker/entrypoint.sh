@@ -32,7 +32,7 @@ mkdir -p /var/www/html/storage/framework/cache/data \
 
 # Atur kepemilikan dan permission direktori storage
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # 3. Generate APP_KEY jika belum ada
 if [ -z "$APP_KEY" ]; then
